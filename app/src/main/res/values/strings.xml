@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stores</string>
+    <string name="args_id" translatable="false">key_id</string>
+    <string name="description_img_photo">Store image</string>
+    <string name="description_store_add">Create Store</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="helper_required">Required</string>
+    <string name="hint_name">Store name</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_web">Website URL</string>
+    <string name="photo_url">Photo URL</string>
+    <string name="edit_store_title_add">Create Store</string>
+    <string name="menu_save">Save</string>
+    <string name="edit_store_message_save_success">Store added successfully</string>
+    <string name="edit_store_message_update_success">Update successful</string>
+    <string name="edit_store_title_edit">Edit Store</string>
+    <string name="dialog_delete_title">Delete Store?</string>
+    <string name="dialog_delete_confirm">Delete</string>
+    <string name="dialog_delete_cancel">Cancel</string>
+    <string name="dialog_options_title">What do you want to do?</string>
+    <string name="main_error_no_website">This store has no website</string>
+    <string name="main_error_invalid_website">The URL is not valid</string>
+    <string name="main_error_no_resolve">No compatible app found</string>
+    <string name="dialog_call">Call</string>
+    <string name="dialog_web">Visit website</string>
+</resources>
