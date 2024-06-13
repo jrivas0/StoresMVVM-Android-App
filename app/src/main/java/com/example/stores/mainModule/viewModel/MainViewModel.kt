@@ -3,10 +3,9 @@ package com.example.stores.mainModule.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.stores.StoreApplication
 import com.example.stores.common.entities.StoreEntity
+import com.example.stores.common.utils.Constants
 import com.example.stores.mainModule.model.MainInteractor
-import java.util.concurrent.LinkedBlockingQueue
 
 class MainViewModel: ViewModel() {
     private var storeList: MutableList<StoreEntity>
@@ -18,26 +17,28 @@ class MainViewModel: ViewModel() {
         interactor = MainInteractor()
     }
 
-    private val stores: MutableLiveData<List<StoreEntity>> by lazy {
-        MutableLiveData<List<StoreEntity>>()/*.also { // descomentar con corrutinas
+    private val stores: MutableLiveData<MutableList<StoreEntity>> by lazy {
+        MutableLiveData<MutableList<StoreEntity>>()/*.also { // descomentar con corrutinas
             loadStores()
         } */
     }
 
-    fun getStores(): LiveData<List<StoreEntity>>{
+    private val showProgress : MutableLiveData<Boolean> = MutableLiveData()
+
+    fun getStores(): LiveData<MutableList<StoreEntity>>{
         return stores.also {
             loadStores()
         }
     }
 
+    fun isShowProgress(): LiveData<Boolean>{
+        return showProgress
+    }
+
     private fun loadStores(){
-/*        interactor.getStoresCallback(object : MainInteractor.StoresCallback{
-            override fun getStoresCallbackAux(storesList: MutableList<StoreEntity>) {
-                stores.postValue(storesList)
-                //this@MainViewModel.stores.value = stores
-            }
-        })*/
+        showProgress.value = Constants.SHOW
         interactor.getStores {
+            showProgress.value = Constants.HIDE
             stores.postValue(it)
             storeList = it
         }

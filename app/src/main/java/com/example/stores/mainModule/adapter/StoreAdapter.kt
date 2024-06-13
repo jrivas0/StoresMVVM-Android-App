@@ -25,8 +25,9 @@ class StoreAdapter(private var stores: MutableList<StoreEntity>, private var lis
 
     }
 
-    fun setStores(stores: List<StoreEntity>) {
-        this.stores = stores as MutableList<StoreEntity>
+    @SuppressLint("NotifyDataSetChanged")
+    fun setStores(stores: MutableList<StoreEntity>) {
+        this.stores = stores
         notifyDataSetChanged()
     }
 
@@ -40,7 +41,7 @@ class StoreAdapter(private var stores: MutableList<StoreEntity>, private var lis
 
     }
 
-    fun delete(store: StoreEntity) {
+   /* fun delete(store: StoreEntity) {
 
         val index = stores.indexOf(store)
         if(index != -1){
@@ -48,7 +49,7 @@ class StoreAdapter(private var stores: MutableList<StoreEntity>, private var lis
             notifyItemRemoved(index)
         }
 
-    }
+    } */
 
     fun add(store: StoreEntity) {
         if (store.id != 0L) {
