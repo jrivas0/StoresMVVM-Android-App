@@ -1,6 +1,6 @@
 # Stores
 
-Stores is an Android application developed in Kotlin that allows users to add and view a list of stores. The application follows the MVVM (Model-View-ViewModel) architecture pattern, utilizing Room for local database storage and Volley for network operations.
+Stores is an Android application developed in Kotlin that allows users to add and view a list of stores. The application follows the MVVM (Model-View-ViewModel) architecture pattern, utilizing Room for local database storage, Volley for network operations, and LiveData for reactive data handling and UI updates.
 
 ## Features
 
