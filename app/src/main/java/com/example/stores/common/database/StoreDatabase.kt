@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.example.stores.common.database.StoreDao
 import com.example.stores.common.entities.StoreEntity
 
-@Database(entities = arrayOf(StoreEntity::class), version = 2)
+@Database(entities = arrayOf(StoreEntity::class), version = 3)
 abstract class StoreDatabase : RoomDatabase() {
     abstract fun storeDao(): StoreDao
 }

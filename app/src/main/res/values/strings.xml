@@ -24,4 +24,9 @@
     <string name="main_error_no_resolve">No compatible app found</string>
     <string name="dialog_call">Call</string>
     <string name="dialog_web">Visit website</string>
+    <string name="get_error_string">Error al consultar datos</string>
+    <string name="insert_error_string">Error al insertar datos</string>
+    <string name="update_error_string">Error al actualizar datos</string>
+    <string name="delete_error_string">Error al eliminar datos</string>
+    <string name="unknown_error_string">Error desconocido</string>
 </resources>

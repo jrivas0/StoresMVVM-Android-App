@@ -65,10 +65,19 @@ dependencies {
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
 
+    //LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$roomVersion")
+
     //Volley
     implementation("com.android.volley:volley:1.2.1")
 
     //Gson
     implementation("com.google.code.gson:gson:2.11.0")
+
+    //Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
 }

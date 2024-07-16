@@ -11,13 +11,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.stores.R
 import com.example.stores.common.entities.StoreEntity
+import com.example.stores.common.utils.TypeError
 import com.example.stores.databinding.FragmentEditStoreBinding
 import com.example.stores.editModel.viewModel.EditStoreViewModel
 import com.example.stores.mainModule.MainActivity
@@ -56,15 +56,14 @@ class EditStoreFragment : Fragment() {
         setUpViewModel()
 
 
-
         setUpTextFields()
 
     }
 
     private fun setUpViewModel() {
         mEditStoreViewModel.getStoreSelected().observe(viewLifecycleOwner) {
-            mStoreEntity = it
-            if (it.id != 0L){
+            mStoreEntity = it ?: StoreEntity()
+            if (it != null){
                 mIsEditMode = true
                 setUiStore(it)
             }else {
@@ -79,16 +78,25 @@ class EditStoreFragment : Fragment() {
             hideKeyboard()
 
             when(result){
-                is Long -> {
-                    mStoreEntity.id = result
+                is StoreEntity -> {
+                    val msgRes = if (result.id == 0L) R.string.edit_store_message_save_success else
+                        R.string.edit_store_message_update_success
                     mEditStoreViewModel.setStoreSelected(mStoreEntity)
-                    Toast.makeText(mActivity, R.string.edit_store_message_save_success,Toast.LENGTH_SHORT).show()
+                    Snackbar.make(mBinding.root, msgRes, Snackbar.LENGTH_SHORT).show()
                     mActivity?.onBackPressedDispatcher?.onBackPressed()
                 }
-                is StoreEntity -> {
-                    mEditStoreViewModel.setStoreSelected(mStoreEntity)
-                    Snackbar.make(mBinding.root,
-                        R.string.edit_store_message_update_success, Snackbar.LENGTH_SHORT).show()
+            }
+
+            mEditStoreViewModel.getTypeError().observe(viewLifecycleOwner) { typeError ->
+                if (typeError != TypeError.NONE) {
+                    val msgRes = when (typeError) {
+                        TypeError.GET -> getString(R.string.get_error_string)
+                        TypeError.INSERT -> getString(R.string.insert_error_string)
+                        TypeError.UPDATE -> getString(R.string.update_error_string)
+                        TypeError.DELETE -> getString(R.string.delete_error_string)
+                        else -> getString(R.string.unknown_error_string)
+                    }
+                    Snackbar.make(mBinding.root, msgRes, Snackbar.LENGTH_SHORT).show()
                 }
             }
 
@@ -187,9 +195,9 @@ class EditStoreFragment : Fragment() {
 
 
     private fun hideKeyboard(){
-        val imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (view != null){
-            imm.hideSoftInputFromWindow(requireView().windowToken,0)
+            imm?.hideSoftInputFromWindow(requireView().windowToken,0)
         }
     }
 
@@ -201,8 +209,8 @@ class EditStoreFragment : Fragment() {
     override fun onDestroy() {
         mActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         mActivity?.supportActionBar?.title = getString(R.string.app_name)
-        mEditStoreViewModel.setShowFab(true)
         mEditStoreViewModel.setResult(Any())
+        mEditStoreViewModel.setTypeError(TypeError.NONE)
         setHasOptionsMenu(false)
         super.onDestroy()
     }

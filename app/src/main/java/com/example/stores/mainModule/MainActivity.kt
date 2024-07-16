@@ -7,24 +7,27 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.URLUtil.isValidUrl
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.stores.editModel.EditStoreFragment
 import com.example.stores.R
 import com.example.stores.common.entities.StoreEntity
+import com.example.stores.common.utils.TypeError
 import com.example.stores.databinding.ActivityMainBinding
 import com.example.stores.editModel.viewModel.EditStoreViewModel
 import com.example.stores.mainModule.adapter.OnClickListener
-import com.example.stores.mainModule.adapter.StoreAdapter
+import com.example.stores.mainModule.adapter.StoreListAdapter
 import com.example.stores.mainModule.viewModel.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var mBinding: ActivityMainBinding
 
-    private lateinit var mAdapter: StoreAdapter
+    private lateinit var mAdapter: StoreListAdapter
 
     private lateinit var mGridLayout: GridLayoutManager
 
@@ -47,27 +50,48 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             mAdapter.add(store)
         }*/
 
+
         mBinding.fab.setOnClickListener{launchEditFragment()}
         setUpViewModel()
         initUi()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                mEditStoreViewModel.setShowFab(true)
+                // You can also call finish() if you want to close the activity
+                if (isEnabled) {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
     }
 
     private fun setUpViewModel() {
         mMainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mMainViewModel.getStores().observe(this) { stores ->
-            mAdapter.setStores(stores)
+            mBinding.progressBar.visibility = View.GONE
+            mAdapter.submitList(stores)
         }
         mMainViewModel.isShowProgress().observe(this) { isShowProgress ->
             mBinding.progressBar.visibility = if (isShowProgress) View.VISIBLE else View.GONE
         }
 
+        mMainViewModel.getTypeError().observe(this) { typeError ->
+            val msgRes = when (typeError) {
+                TypeError.GET -> getString(R.string.get_error_string)
+                TypeError.INSERT -> getString(R.string.insert_error_string)
+                TypeError.UPDATE-> getString(R.string.update_error_string)
+                TypeError.DELETE -> getString(R.string.delete_error_string)
+                else -> getString(R.string.unknown_error_string)
+            }
+            Snackbar.make(mBinding.root, msgRes, Snackbar.LENGTH_SHORT).show()
+
+        }
+
         mEditStoreViewModel = ViewModelProvider(this).get(EditStoreViewModel::class.java)
         mEditStoreViewModel.getShowFab().observe(this) { isVisible ->
             if (isVisible) mBinding.fab.show() else mBinding.fab.hide()
-        }
-
-        mEditStoreViewModel.getStoreSelected().observe(this) { storeEntity ->
-            mAdapter.add(storeEntity)
         }
 
     }
@@ -97,7 +121,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
 
     private fun initUi(){
-        mAdapter = StoreAdapter(mutableListOf(),this)
+        mAdapter = StoreListAdapter(this)
         mGridLayout = GridLayoutManager(this,2)
         //getStores()
 
